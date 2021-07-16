@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_main"
+    app:startDestination="@id/repositoryFragment">
+
+    <fragment
+        android:id="@+id/repositoryFragment"
+        android:name="ru.test.testapplication.ui.RepositoryFragment"
+        android:label="RepositoryFragment" >
+        <action
+            android:id="@+id/action_repositoryFragment_to_fragmentDownloads"
+            app:destination="@id/fragmentDownloads" />
+    </fragment>
+    <fragment
+        android:id="@+id/fragmentDownloads"
+        android:name="ru.test.testapplication.ui.FragmentDownloads"
+        android:label="FragmentDownloads" />
+</navigation>

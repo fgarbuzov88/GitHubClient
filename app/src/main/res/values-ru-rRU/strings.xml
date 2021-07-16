@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="downloads">Сохраненное</string>
+    <string name="app_name">TestApplication</string>
+    <string name="user">Пользователь</string>
+    <string name="repository">Репозиторий</string>
+    <string name="empty_repository_list">Нет сохраненных репоситориев.\nЕсли Вы сохраните новый репозиторий, он будет доступен здесь</string>
+    <string name="search">Поиск</string>
+    <string name="app_not_found">Приложение не найдено</string>
+    <string name="successful_download">Загружено успешно</string>
+    <string name="failed_download">Загрузка не удалась. Пожалуйста, попробуйте позднее</string>
+    <string name="toast_empty_field">Поле не может быть пустым.</string>
+</resources>
