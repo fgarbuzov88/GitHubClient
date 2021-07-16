@@ -3,8 +3,10 @@ package ru.test.testapplication.repository
 import android.content.Context
 import android.os.Environment
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.withContext
 import okhttp3.ResponseBody
 import ru.test.testapplication.api.AppApi
 import ru.test.testapplication.dao.DownloadsRepositoryDao
@@ -15,7 +17,6 @@ import ru.test.testapplication.exceptions.ApiException
 import ru.test.testapplication.exceptions.ServerException
 import ru.test.testapplication.exceptions.UnknownException
 import java.io.*
-
 
 class AppRepositoryImpl(
     private val repositoryDao: RepositoryDao,
@@ -83,30 +84,32 @@ class AppRepositoryImpl(
         }
     }
 
-    private fun writeResponseBodyToDisk(body: ResponseBody, repo: String, context: Context) {
-        try {
-            val file =
-                File(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), repo)
-            val outputStream: OutputStream
-            val fileReader = byteArrayOf(4096.toByte())
-            var fileSizeDownloads = 0
-            val inputStream: InputStream = body.byteStream()
-            outputStream = FileOutputStream(file)
+    private suspend fun writeResponseBodyToDisk(body: ResponseBody, repo: String, context: Context) {
+        withContext(Dispatchers.IO) {
+            try {
+                val file =
+                    File(context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS), repo)
+                val outputStream: OutputStream
+                val fileReader = byteArrayOf(4096.toByte())
+                var fileSizeDownloads = 0
+                val inputStream: InputStream = body.byteStream()
+                outputStream = FileOutputStream(file)
 
-            while (true) {
-                val read = inputStream.read(fileReader)
+                while (true) {
+                    val read = inputStream.read(fileReader)
+                    if (read == -1) {
+                        break
+                    }
 
-                if (read == -1) {
-                    break
+                    outputStream.write(fileReader, 0, read)
+                    fileSizeDownloads += read
                 }
-
-                outputStream.write(fileReader, 0, read)
-                fileSizeDownloads += read
+                outputStream.close()
+            } catch (e: IOException) {
+                throw ServerException
+            } catch (e: Exception) {
+                throw UnknownException
             }
-        } catch (e: IOException) {
-            throw ServerException
-        } catch (e: Exception) {
-            throw UnknownException
         }
     }
 }
